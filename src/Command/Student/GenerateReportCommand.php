@@ -10,10 +10,11 @@ use App\Builder\ProgressReportBuilder;
 use App\Builder\ReportBuilderInterface;
 use App\Entity\Student;
 use App\Enum\ReportType;
+use App\Factory\ReportBuilderFactoryInterface;
 use App\Repository\StudentRepositoryInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Helper\SymfonyQuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -22,13 +23,12 @@ use Symfony\Component\Console\Question\Question;
 #[AsCommand(name: 'student:generate-report')]
 class GenerateReportCommand extends Command
 {
-    private QuestionHelper $questionHelper;
-
     public function __construct(
         private readonly StudentRepositoryInterface $studentRepo,
+        private readonly SymfonyQuestionHelper $questionHelper,
+        private readonly ReportBuilderFactoryInterface $reportBuilderFactory,
         string $name = null
     ) {
-        $this->questionHelper = new QuestionHelper();
         parent::__construct($name);
     }
 
@@ -44,9 +44,11 @@ class GenerateReportCommand extends Command
 
         $reportType = $this->retrieveReportType($input, $output);
 
-        $builder = $this->createBuilderForType($student, $reportType);
+        $builder = $this->reportBuilderFactory->createBuilderFromType($reportType);
 
-        $output->writeln($builder->listDetails());
+        $output->writeln(
+            $builder->forStudent($student)->listDetails()
+        );
 
         return Command::SUCCESS;
     }
@@ -74,14 +76,5 @@ class GenerateReportCommand extends Command
         );
 
         return ReportType::from($choice);
-    }
-
-    private function createBuilderForType(Student $student, ReportType $reportType): ReportBuilderInterface
-    {
-        return match ($reportType) {
-            ReportType::Diagnostic => new DiagnosticReportBuilder($student),
-            ReportType::Progress => new ProgressReportBuilder($student),
-            ReportType::Feedback => new FeedbackReportBuilder($student),
-        };
     }
 }

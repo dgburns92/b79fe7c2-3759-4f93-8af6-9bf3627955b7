@@ -6,9 +6,14 @@ namespace App\Builder;
 
 use App\Entity\Student;
 
-abstract class AbstractStudentReportBuilder
+abstract class AbstractStudentReportBuilder implements ReportBuilderInterface
 {
-    public function __construct(protected readonly Student $student)
+    protected ?Student $student = null;
+
+    public function forStudent(Student $student): static
     {
+        $this->student = $student;
+
+        return $this;
     }
 }
