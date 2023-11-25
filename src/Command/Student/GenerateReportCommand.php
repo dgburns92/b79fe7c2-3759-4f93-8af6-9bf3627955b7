@@ -22,11 +22,13 @@ use Symfony\Component\Console\Question\Question;
 #[AsCommand(name: 'student:generate-report')]
 class GenerateReportCommand extends Command
 {
+    private QuestionHelper $questionHelper;
+
     public function __construct(
-        private readonly QuestionHelper $questionHelper,
         private readonly StudentRepositoryInterface $studentRepo,
         string $name = null
     ) {
+        $this->questionHelper = new QuestionHelper();
         parent::__construct($name);
     }
 
