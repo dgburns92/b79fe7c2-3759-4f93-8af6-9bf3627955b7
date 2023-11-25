@@ -1,0 +1,59 @@
+name: CI checks
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  coding-standards:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        actions:
+          - { name: PHP Code Sniffer, run: vendor/bin/phpcs src tests -s }
+          - { name: PHPStan, run: vendor/bin/phpstan analyse --no-progress --error-format=github }
+          - { name: PHPUnit, run: vendor/bin/phpunit tests --teamcity }
+
+    name: ${{ matrix.actions.name }}
+
+    steps:
+      - # https://github.com/actions/checkout
+        name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: composer:v2
+          ini-values: assert.active=1,assert.exception=1,zend.assertions=1
+
+      - name: Validate composer.json
+        run: composer validate
+
+      - name: Get composer cache directory
+        id: composercache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composercache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+        env:
+          COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
+
+      - name: Configure matchers
+        uses: mheap/phpunit-matcher-action@v1
+
+      - name: '[CI] ${{ matrix.actions.name }}'
+        run: php -d memory_limit=-1 ${{ matrix.actions.run }}
+        env:
+          APP_ENV: test
