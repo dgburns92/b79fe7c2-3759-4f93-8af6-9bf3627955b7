@@ -39,6 +39,7 @@ class ReportBuilderFactoryTest extends TestCase
 
     /**
      * @dataProvider generateBuilders
+     * @param class-string<ReportBuilderInterface> $expected
      */
     public function testCreateBuilderFromTypeWithCases(ReportType $type, string $expected): void
     {

@@ -8,6 +8,7 @@ use App\Entity\Question;
 use App\Entity\StudentResponse;
 use App\Repository\QuestionRepositoryInterface;
 use App\Repository\StudentResponseRepositoryInterface;
+use DateTimeInterface;
 use RuntimeException;
 
 class DiagnosticReportBuilder extends AbstractStudentReportBuilder implements ReportBuilderInterface
@@ -25,6 +26,12 @@ class DiagnosticReportBuilder extends AbstractStudentReportBuilder implements Re
         }
 
         $studentResponse = $this->studentResponseRepo->findMostRecentCompletedByStudent($this->student);
+
+        if ($studentResponse === null) {
+            return ['Student has not completed any assessments'];
+        }
+
+        assert($studentResponse->completed instanceof DateTimeInterface);
 
         $details = [
             sprintf(

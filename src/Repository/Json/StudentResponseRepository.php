@@ -54,6 +54,7 @@ class StudentResponseRepository implements StudentResponseRepositoryInterface
         }
 
         return array_reduce($completed, function (StudentResponse $max, StudentResponse $current) {
+            assert($current->completed instanceof DateTimeInterface && $max->completed instanceof DateTimeInterface);
             return ($current->completed->getTimestamp() > $max->completed->getTimestamp()) ? $current : $max;
         }, $completed[0]);
     }
@@ -84,13 +85,11 @@ class StudentResponseRepository implements StudentResponseRepositoryInterface
         foreach ($data as $row) {
             $studentResponse[$row['id']] = new StudentResponse(
                 id: $row['id'],
-                assessment: $this->assessmentRepo->find($row['assessmentId']),
-                assigned: DateTimeImmutable::createFromFormat('d/m/Y H:i:s', $row['assigned']),
-                started: isset($row['started']) ?
-                    DateTimeImmutable::createFromFormat('d/m/Y H:i:s', $row['started']) : null,
-                completed: isset($row['completed']) ?
-                    DateTimeImmutable::createFromFormat('d/m/Y H:i:s', $row['completed']) : null,
-                student: $this->studentRepo->find($row['student']['id']),
+                assessment: $this->assessmentRepo->findOrFail($row['assessmentId']),
+                assigned: $this->loadDate($row['assigned']),
+                started: isset($row['started']) ? $this->loadDate($row['started']) : null,
+                completed: isset($row['completed']) ? $this->loadDate($row['completed']) : null,
+                student: $this->studentRepo->findOrFail($row['student']['id']),
                 yearLevel: $row['student']['yearLevel'],
                 responses: $row['responses'],
                 rawScore: $row['results']['rawScore'],
@@ -98,5 +97,13 @@ class StudentResponseRepository implements StudentResponseRepositoryInterface
         }
 
         return $studentResponse;
+    }
+
+    private function loadDate(string $date): DateTimeInterface
+    {
+        $dateObject =  DateTimeImmutable::createFromFormat('d/m/Y H:i:s', $date);
+        assert($dateObject instanceof DateTimeInterface);
+
+        return $dateObject;
     }
 }

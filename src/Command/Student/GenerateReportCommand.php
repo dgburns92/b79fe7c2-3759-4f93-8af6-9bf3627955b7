@@ -68,6 +68,7 @@ class GenerateReportCommand extends Command
 
     private function retrieveReportType(InputInterface $input, OutputInterface $output): ReportType
     {
+        /** @var string $choice */
         $choice = $this->questionHelper->ask(
             $input,
             $output,

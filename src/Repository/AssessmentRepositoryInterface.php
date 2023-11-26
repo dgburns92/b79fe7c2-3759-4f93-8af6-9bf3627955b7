@@ -9,4 +9,6 @@ use App\Entity\Assessment;
 interface AssessmentRepositoryInterface
 {
     public function find(string $id): ?Assessment;
+
+    public function findOrFail(string $id): Assessment;
 }

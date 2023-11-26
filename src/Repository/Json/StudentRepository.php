@@ -6,6 +6,7 @@ namespace App\Repository\Json;
 
 use App\Entity\Student;
 use App\Repository\StudentRepositoryInterface;
+use Exception;
 
 class StudentRepository implements StudentRepositoryInterface
 {
@@ -20,6 +21,17 @@ class StudentRepository implements StudentRepositoryInterface
     public function find(string $id): ?Student
     {
         return $this->students[$id] ?? null;
+    }
+
+    public function findOrFail(string $id): Student
+    {
+        $student = $this->find($id);
+
+        if ($student === null) {
+            throw new Exception('Unable to find Assessment');
+        }
+
+        return $student;
     }
 
     /** @return array<string, Student> */
