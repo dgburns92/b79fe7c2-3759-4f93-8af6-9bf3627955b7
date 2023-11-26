@@ -25,9 +25,11 @@ class StudentResponseRepository implements StudentResponseRepositoryInterface
 
     public function findByStudent(Student $student): array
     {
-        return array_filter(
-            $this->studentResponse,
-            static fn(StudentResponse $response) => $response->student->id === $student->id
+        return array_values(
+            array_filter(
+                $this->studentResponse,
+                static fn(StudentResponse $response) => $response->student->id === $student->id
+            )
         );
     }
 
@@ -38,9 +40,12 @@ class StudentResponseRepository implements StudentResponseRepositoryInterface
         if (count($byStudent) === 0) {
             return null;
         }
-
         return array_reduce($byStudent, function (StudentResponse $max, StudentResponse $current) {
-            return ($current->completed->getTimestamp() > $max->completed->getTimestamp()) ? $current : $max;
+            if ($current->completed === null) {
+                return $max;
+            }
+
+            return ($current->completed?->getTimestamp() > $max->completed?->getTimestamp()) ? $current : $max;
         }, $byStudent[0]);
     }
 

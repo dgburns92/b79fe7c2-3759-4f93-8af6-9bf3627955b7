@@ -13,9 +13,4 @@ class Assessment
         public readonly array $questions
     ) {
     }
-
-    public function getTotalQuestions(): int
-    {
-        return count($this->questions);
-    }
 }

@@ -22,6 +22,11 @@ class StudentResponse
     ) {
     }
 
+    public function getTotalQuestions(): int
+    {
+        return count($this->responses);
+    }
+
     /** @return string[] */
     public function getQuestionIds(): array
     {
