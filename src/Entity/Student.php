@@ -13,4 +13,9 @@ class Student
         public readonly int $yearLevel
     ) {
     }
+
+    public function getFullName(): string
+    {
+        return "$this->firstName $this->lastName";
+    }
 }

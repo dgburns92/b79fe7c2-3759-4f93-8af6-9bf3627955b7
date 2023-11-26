@@ -23,12 +23,14 @@ use Symfony\Component\Console\Question\Question;
 #[AsCommand(name: 'student:generate-report')]
 class GenerateReportCommand extends Command
 {
+    private readonly SymfonyQuestionHelper $questionHelper;
+
     public function __construct(
         private readonly StudentRepositoryInterface $studentRepo,
-        private readonly SymfonyQuestionHelper $questionHelper,
         private readonly ReportBuilderFactoryInterface $reportBuilderFactory,
         string $name = null
     ) {
+        $this->questionHelper = new SymfonyQuestionHelper();
         parent::__construct($name);
     }
 
@@ -71,7 +73,7 @@ class GenerateReportCommand extends Command
             $output,
             new ChoiceQuestion(
                 'Report to generate (1 for Diagnostic, 2 for Progress, 3 for Feedback):',
-                [ReportType::Diagnostic, ReportType::Progress, ReportType::Feedback]
+                [ReportType::Diagnostic->value, ReportType::Progress->value, ReportType::Feedback->value]
             )
         );
 
