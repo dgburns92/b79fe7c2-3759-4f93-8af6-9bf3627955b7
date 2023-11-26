@@ -45,7 +45,7 @@ class StudentResponseRepository implements StudentResponseRepositoryInterface
                 return $max;
             }
 
-            return ($current->completed?->getTimestamp() > $max->completed?->getTimestamp()) ? $current : $max;
+            return ($current->completed->getTimestamp() > $max->completed->getTimestamp()) ? $current : $max;
         }, $byStudent[0]);
     }
 
