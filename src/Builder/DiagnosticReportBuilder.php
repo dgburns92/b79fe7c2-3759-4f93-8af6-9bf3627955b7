@@ -83,7 +83,7 @@ class DiagnosticReportBuilder extends AbstractStudentReportBuilder implements Re
                 $detailsByStrands[$question->strand]['total'] = 0;
             }
 
-            if ($response['response'] === $question->answer->id) {
+            if ($response['response'] === $question->answer) {
                 $detailsByStrands[$question->strand]['totalCorrect'] = 0;
             }
 

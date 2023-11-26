@@ -16,7 +16,7 @@ class Question
         public readonly string $strand,
         public readonly string $hint,
         public readonly array $options,
-        public readonly Option $answer
+        public readonly string $answer
     ) {
     }
 }

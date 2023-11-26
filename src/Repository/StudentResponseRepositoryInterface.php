@@ -9,7 +9,8 @@ use App\Entity\StudentResponse;
 
 interface StudentResponseRepositoryInterface
 {
-    public function findByStudent(Student $student): StudentResponse;
+    /** @return StudentResponse[] */
+    public function findByStudent(Student $student): array;
 
-    public function findMostRecentByStudent(Student $student): StudentResponse;
+    public function findMostRecentByStudent(Student $student): ?StudentResponse;
 }

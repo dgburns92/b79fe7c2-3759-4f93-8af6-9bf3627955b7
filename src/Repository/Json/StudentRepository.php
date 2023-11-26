@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Repository;
+namespace App\Repository\Json;
 
 use App\Entity\Student;
+use App\Repository\StudentRepositoryInterface;
 
-class JsonStudentRepository implements StudentRepositoryInterface
+class StudentRepository implements StudentRepositoryInterface
 {
     /** @var array<string, Student> $students */
     private array $students;

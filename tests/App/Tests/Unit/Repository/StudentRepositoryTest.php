@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Repository;
 
 use App\Entity\Student;
-use App\Repository\JsonStudentRepository;
+use App\Repository\Json\StudentRepository;
 use PHPUnit\Framework\TestCase;
 
-class JsonStudentRepositoryTest extends TestCase
+class StudentRepositoryTest extends TestCase
 {
     public function testFindExpectsStudentWhenUsingCorrectId(): void
     {
         // Arrange
         $studentId = 'student1';
-        $repository = new JsonStudentRepository();
+        $repository = new StudentRepository();
 
         // Act
         $actual = $repository->find($studentId);
@@ -27,7 +27,7 @@ class JsonStudentRepositoryTest extends TestCase
     public function testFindExpectsNullWhenUsingIncorrectId(): void
     {
         // Arrange
-        $repository = new JsonStudentRepository();
+        $repository = new StudentRepository();
 
         // Act
         $actual = $repository->find('this-id-does-not-exist');
