@@ -20,7 +20,7 @@ class ReportBuilderFactoryTest extends TestCase
     /**
      * @return \Generator<string, array{expected: class-string<ReportBuilderInterface>}>
      */
-    public function generateBuilders(): Generator
+    public static function generateBuilders(): Generator
     {
         yield ReportType::Diagnostic->value => [
             'type' => ReportType::Diagnostic,
