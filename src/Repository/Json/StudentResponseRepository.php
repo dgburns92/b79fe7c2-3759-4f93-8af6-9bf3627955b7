@@ -10,6 +10,7 @@ use App\Repository\AssessmentRepositoryInterface;
 use App\Repository\StudentRepositoryInterface;
 use App\Repository\StudentResponseRepositoryInterface;
 use DateTimeImmutable;
+use DateTimeInterface;
 
 class StudentResponseRepository implements StudentResponseRepositoryInterface
 {
@@ -33,20 +34,28 @@ class StudentResponseRepository implements StudentResponseRepositoryInterface
         );
     }
 
-    public function findMostRecentByStudent(Student $student): ?StudentResponse
+    public function findMostRecentCompletedByStudent(Student $student): ?StudentResponse
     {
         $byStudent = $this->findByStudent($student);
 
         if (count($byStudent) === 0) {
             return null;
         }
-        return array_reduce($byStudent, function (StudentResponse $max, StudentResponse $current) {
-            if ($current->completed === null) {
-                return $max;
-            }
 
+        $completed = array_values(
+            array_filter(
+                $byStudent,
+                static fn(StudentResponse $studentResponse) => $studentResponse->completed instanceof DateTimeInterface
+            )
+        );
+
+        if (count($completed) === 0) {
+            return null;
+        }
+
+        return array_reduce($completed, function (StudentResponse $max, StudentResponse $current) {
             return ($current->completed->getTimestamp() > $max->completed->getTimestamp()) ? $current : $max;
-        }, $byStudent[0]);
+        }, $completed[0]);
     }
 
     /** @return array<string, StudentResponse> */

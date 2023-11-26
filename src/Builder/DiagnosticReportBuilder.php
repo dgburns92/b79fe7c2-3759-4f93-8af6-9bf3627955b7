@@ -24,7 +24,7 @@ class DiagnosticReportBuilder extends AbstractStudentReportBuilder implements Re
             throw new RuntimeException('You need to select a Student before generating a report.');
         }
 
-        $studentResponse = $this->studentResponseRepo->findMostRecentByStudent($this->student);
+        $studentResponse = $this->studentResponseRepo->findMostRecentCompletedByStudent($this->student);
 
         $details = [
             sprintf(

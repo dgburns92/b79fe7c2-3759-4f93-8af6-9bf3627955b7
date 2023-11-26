@@ -12,5 +12,5 @@ interface StudentResponseRepositoryInterface
     /** @return StudentResponse[] */
     public function findByStudent(Student $student): array;
 
-    public function findMostRecentByStudent(Student $student): ?StudentResponse;
+    public function findMostRecentCompletedByStudent(Student $student): ?StudentResponse;
 }

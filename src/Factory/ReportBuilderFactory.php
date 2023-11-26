@@ -25,7 +25,7 @@ class ReportBuilderFactory implements ReportBuilderFactoryInterface
         return match ($type) {
             ReportType::Diagnostic => new DiagnosticReportBuilder($this->responseRepo, $this->questionRepo),
             ReportType::Progress => new ProgressReportBuilder(),
-            ReportType::Feedback => new FeedbackReportBuilder(),
+            ReportType::Feedback => new FeedbackReportBuilder($this->responseRepo, $this->questionRepo),
         };
     }
 }
